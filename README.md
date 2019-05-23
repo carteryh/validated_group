@@ -7,5 +7,3 @@
 
 ![image](https://github.com/13162576590/validated_group/blob/master/post请求接口.png?raw=true)
 
-![image](https://github.com/13162576590/validated_group/post请求接口.png?raw=true)
-
