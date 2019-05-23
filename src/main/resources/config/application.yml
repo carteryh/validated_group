@@ -1,0 +1,14 @@
+server:
+  port: 9941
+  tomcat:
+    uri-encoding: utf-8
+spring:
+  application:
+    name: validated_group
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  profiles:
+    active: dev
