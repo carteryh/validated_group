@@ -17,8 +17,6 @@ import java.util.Set;
 @RestController
 public class TestGroup {
 
-    //https://blog.csdn.net/liu19900205/article/details/81698985
-//https://blog.csdn.net/dream_broken/article/details/53584169
     @PostMapping("/user")
     public Result addUser( @RequestBody User user, BindingResult br){
 //    public Object addUser(@Validated(value = User.Default.class) @RequestBody User user, BindingResult br){
@@ -50,20 +48,27 @@ public class TestGroup {
         return Result.success(user);
     }
 
-    @PostMapping("/test")
-    public Result test(@RequestBody @Valid User user){
+
+    @PostMapping("/old")
+    public Result old(@RequestBody @Valid User user){
         System.out.println("=====");
         System.out.println(JSON.toJSONString(user));
         Validator validator = Validation.buildDefaultValidatorFactory()
                 .getValidator();
         Set<ConstraintViolation<User>> set = validator.validate(user, Default.class);
 
-//        Set<ConstraintViolation<User>> set1 = validator.validate(user);
-
         for (ConstraintViolation<User> constraintViolation : set) {
             String messageTemplate = constraintViolation.getMessageTemplate();//验证信息
             System.out.println(messageTemplate);
         }
+
+        return Result.success(user);
+    }
+
+    @PostMapping("/test")
+    public Result test(@RequestBody @Valid User user){
+        System.out.println("=====");
+        System.out.println(JSON.toJSONString(user));
 
         return Result.success(user);
     }
