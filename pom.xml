@@ -51,11 +51,11 @@
 			<version>1.2.47</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot2-config-logback</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot2-config-logback</artifactId>-->
+<!--			<version>0.0.2-SNAPSHOT</version>-->
+<!--		</dependency>-->
 
 		<!-- mybatis-plus begin -->
 <!--		<dependency>-->

@@ -2,16 +2,23 @@ package com.exception;
 
 
 import cn.hutool.core.exceptions.ValidateException;
+import cn.hutool.core.util.StrUtil;
 import com.dto.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * Description
@@ -29,18 +36,30 @@ public class GlobalExceptionHandler {
      *
      * @return
      */
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    @ResponseStatus(HttpStatus.OK)
-//    Result handlerMethodArgumentNotValid(HttpServletRequest request, MethodArgumentNotValidException re) {
-//        StringBuilder sb = new StringBuilder();
-//
-//        re.getBindingResult().getAllErrors().forEach(error -> {
-//            String fieldName = ((FieldError) error).getField();
-//            sb.append("[").append(fieldName).append("]").append(error.getDefaultMessage()).append(";    ");
-//        });
-//        String str = StrUtil.format("参数未通过校验:{}", sb.toString());
-//        return Result.errorByParamsVerifyFail(str);
-//    }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.OK)
+    Result handlerMethodArgumentNotValid(HttpServletRequest request, MethodArgumentNotValidException re) {
+        StringBuilder sb = new StringBuilder();
+
+        re.getBindingResult().getAllErrors().forEach(error -> {
+            String fieldName = ((FieldError) error).getField();
+            sb.append("[").append(fieldName).append("]").append(error.getDefaultMessage()).append(";    ");
+        });
+        String str = StrUtil.format("参数未通过校验:{}", sb.toString());
+        return Result.errorByParamsVerifyFail(str);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @ExceptionHandler(BindException.class)
+    public Result handlerBindException(BindException e) {
+        BindingResult bindingResult = e.getBindingResult();
+
+        // 所有参数异常信息
+        List<ObjectError> allErrors = bindingResult.getAllErrors();
+
+        return Result.errorByParamsVerifyFail(allErrors.get(0).getDefaultMessage());
+    }
+
 //
 //    /**
 //     * 如果抛出的是分布式锁异常，将其当做业务异常处理

@@ -1,16 +1,19 @@
 package com.aspect;
 
 import cn.hutool.core.exceptions.ValidateException;
-import com.controller.User;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
+import javax.validation.groups.Default;
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.Set;
 
 /**
@@ -24,6 +27,8 @@ import java.util.Set;
 @Slf4j
 public class ParamValidAspect {
 
+	Validator validator = Validation.buildDefaultValidatorFactory()
+			.getValidator();
 
 	//配置切入点,该方法无方法体,主要为方便同类中其他方法使用此处配置的切入点
 	//切点的集合，这个表达式所描述的是一个虚拟面（规则）
@@ -48,28 +53,51 @@ public class ParamValidAspect {
 	
 	//配置环绕通知,使用在方法aspect()上注册的切入点
 	@Around("aspect()")
-	public void around(JoinPoint joinPoint) throws Throwable, Exception {
+	public Object around(JoinPoint joinPoint) throws Throwable, Exception {
 		boolean validSuccess = true;
 		String messageTemplate = null;
-		Validator validator = Validation.buildDefaultValidatorFactory()
-				.getValidator();
-		Set<ConstraintViolation<Object>> set = validator.validate(joinPoint.getArgs()[0], User.Default.class);
-
-		for (ConstraintViolation<Object> constraintViolation : set) {
-			messageTemplate = constraintViolation.getMessageTemplate();//验证信息
-			System.out.println(messageTemplate);
-			validSuccess = false;
+		MethodSignature signature= (MethodSignature)joinPoint.getSignature();
+		Annotation[] declaredAnnotations = signature.getMethod().getDeclaredAnnotations();
+		if (declaredAnnotations.length > 0) {
+			for (Annotation annotation: declaredAnnotations) {
+				System.out.println(annotation);
+			}
 		}
+
+		Annotation[][] parameterAnnotations= signature.getMethod().getParameterAnnotations();
+		if (parameterAnnotations.length > 0) {
+			for (Annotation[] annotations: parameterAnnotations) {
+				for (Annotation annotation: annotations) {
+					System.out.println(annotation);
+				}
+			}
+		}
+
+
+//		if (joinPoint.getArgs() != null && joinPoint.getArgs().length > 0) {
+//			for (Object obj: joinPoint.getArgs()) {
+//				Set<ConstraintViolation<Object>> set = validator.validate(obj, Default.class);
+//				for (ConstraintViolation<Object> constraintViolation : set) {
+//					messageTemplate = constraintViolation.getMessageTemplate();//验证信息
+//					validSuccess = false;
+//					break;
+//				}
+//				if (!validSuccess) {
+//					break;
+//				}
+//			}
+//		}
+
 		long start = System.currentTimeMillis();
 		log.info("around start " + joinPoint + "\tUse time : " + start + " ms!");
 		if (validSuccess) {
-			((ProceedingJoinPoint) joinPoint).proceed();
+			return ((ProceedingJoinPoint) joinPoint).proceed();
 		} else {
 			new ValidateException(messageTemplate);
 		}
 		long end = System.currentTimeMillis();
 		log.info("around " + joinPoint + "\tUse time : " + (end - start) + " ms!");
-
+		return null;
 	}
 	
 	//配置后置返回通知,使用在方法aspect()上注册的切入点
