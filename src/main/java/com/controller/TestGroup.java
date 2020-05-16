@@ -1,11 +1,12 @@
 package com.controller;
 
+import cn.hutool.core.exceptions.ValidateException;
+import com.alibaba.fastjson.JSON;
+import com.dto.Result;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import springfox.documentation.spring.web.json.Json;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -28,7 +29,8 @@ public class TestGroup {
         for (ConstraintViolation<User> constraintViolation : set) {
            String messageTemplate = constraintViolation.getMessageTemplate();//验证信息
            System.out.println(messageTemplate);
-       }
+        }
+
 
 
         if(br.hasErrors()){
@@ -55,6 +57,24 @@ public class TestGroup {
         }
         return "2";
 
+    }
+
+    @PostMapping("/test")
+    public Result test(@RequestBody User user){
+        System.out.println("=====");
+        System.out.println(JSON.toJSONString(user));
+//    public Object addUser(@Validated(value = User.Default.class) @RequestBody User user, BindingResult br){
+//        Set<ConstraintViolation<User>> set= Validation.buildDefaultValidatorFactory().getValidator().validate(user);
+//        Validator validator = Validation.buildDefaultValidatorFactory()
+//                .getValidator();
+//        Set<ConstraintViolation<User>> set = validator.validate(user, User.Default.class);
+//
+//        for (ConstraintViolation<User> constraintViolation : set) {
+//            String messageTemplate = constraintViolation.getMessageTemplate();//验证信息
+//            System.out.println(messageTemplate);
+//        }
+
+        return Result.success(user);
     }
 
 }
