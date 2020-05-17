@@ -70,7 +70,9 @@ public class ParamValidAspect {
 			for (Annotation[] annotations: parameterAnnotations) {
 				for (Annotation annotation: annotations) {
 					System.out.println(annotation);
-//					annotation instanceof Valid
+					if (annotation instanceof Valid) {
+						System.out.println(annotation);
+					}
 				}
 			}
 		}
