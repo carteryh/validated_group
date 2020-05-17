@@ -9,6 +9,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.Valid;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.groups.Default;
@@ -69,6 +70,7 @@ public class ParamValidAspect {
 			for (Annotation[] annotations: parameterAnnotations) {
 				for (Annotation annotation: annotations) {
 					System.out.println(annotation);
+//					annotation instanceof Valid
 				}
 			}
 		}
