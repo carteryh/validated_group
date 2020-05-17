@@ -37,6 +37,7 @@
         return "2";
     }
 
+效果图
     ![image](https://github.com/13162576590/validated_group/blob/master/post请求接口.png?raw=true)
 
 二、全局异常实现
