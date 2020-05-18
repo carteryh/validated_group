@@ -55,7 +55,7 @@ public class ParamValidAspect {
 	//配置环绕通知,使用在方法aspect()上注册的切入点
 	@Around("aspect()")
 	public Object around(JoinPoint joinPoint) throws Throwable, Exception {
-		boolean validSuccess = true;
+		boolean validSuccess = false;
 		String messageTemplate = null;
 		MethodSignature signature= (MethodSignature)joinPoint.getSignature();
 		Annotation[] declaredAnnotations = signature.getMethod().getDeclaredAnnotations();
@@ -94,14 +94,17 @@ public class ParamValidAspect {
 
 		long start = System.currentTimeMillis();
 		log.info("around start " + joinPoint + "\tUse time : " + start + " ms!");
+		Object proceed = null;
+
 		if (validSuccess) {
-			return ((ProceedingJoinPoint) joinPoint).proceed();
+			proceed = ((ProceedingJoinPoint) joinPoint).proceed();
 		} else {
-			new ValidateException(messageTemplate);
+			throw new ValidateException("error");
 		}
+
 		long end = System.currentTimeMillis();
 		log.info("around " + joinPoint + "\tUse time : " + (end - start) + " ms!");
-		return null;
+		return proceed;
 	}
 	
 	//配置后置返回通知,使用在方法aspect()上注册的切入点

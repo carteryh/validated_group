@@ -3,6 +3,8 @@ package com.controller;
 import cn.hutool.core.exceptions.ValidateException;
 import com.alibaba.fastjson.JSON;
 import com.dto.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,9 @@ import java.util.Set;
 
 @RestController
 public class TestGroup {
+
+    @Autowired
+    private ApplicationContext applicationContext;
 
     @PostMapping("/user")
     public Result addUser( @RequestBody User user, BindingResult br){
@@ -80,8 +85,12 @@ public class TestGroup {
     }
 
     @GetMapping("/test2")
-    public Result test2(){
-         User user = new User();
+    public Result test2() {
+        Object testGroup = applicationContext.getBean("testGroup");
+        String[] beanDefinitionNames = applicationContext.getBeanDefinitionNames();
+        System.out.println(JSON.toJSONString(beanDefinitionNames));
+//
+        User user = new User();
          user.setAge(12);
          user.setId(12l);
          user.setName("臧尚");
